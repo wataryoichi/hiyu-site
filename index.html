@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>hiyu — どこからでも、AIと開発を</title>
-<meta name="description" content="スマホ・タブレットから、AIコーディングエージェントを動かすターミナル。tmux のセッションをそのまま持ち歩き、Tailscale 越しに安全に。チーム共有・運用者名簿・操作監査に対応。">
-<meta property="og:title" content="hiyu — どこからでも、AIと開発を">
-<meta property="og:description" content="スマホから AI コーディングエージェントを動かすターミナル。tmux をそのまま、Tailscale 越しに安全に。">
+<title>hiyu / 日結 — 人とAIを結び、日々に結果を</title>
+<meta name="description" content="hiyu（日結）は、毎日 AI に指示を出して結果を出すための開発ツール。スマホ・タブレットから AI コーディングエージェントを動かすターミナル。tmux をそのまま持ち歩き、Tailscale 越しに安全に。チーム共有・運用者名簿・操作監査に対応。">
+<meta property="og:title" content="hiyu / 日結 — 人とAIを結び、日々に結果を">
+<meta property="og:description" content="毎日 AI に指示を出して結果を出す開発ツール。スマホから AI エージェントを動かすターミナルを、tmux のまま Tailscale 越しに。Connect every day. Ship every day.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0f172a">
 <style>
@@ -29,6 +29,7 @@
   header{display:flex; align-items:center; justify-content:space-between; padding:18px 0}
   .brand{display:flex; align-items:center; gap:10px; font-weight:900; font-size:20px; letter-spacing:.5px}
   .brand .dot{width:11px; height:11px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 16px rgba(59,130,246,.7)}
+  .brand .kanji{color:var(--muted); font-size:14px; font-weight:800; letter-spacing:2px}
   .badge{display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border:1px solid var(--line); border-radius:999px; background:var(--panel); color:var(--muted); font-size:12px; font-weight:800}
   .badge .pulse{width:8px;height:8px;border-radius:999px;background:var(--ok);box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
@@ -36,6 +37,7 @@
   .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:34px; align-items:center; padding:46px 0 26px}
   .hero h1{margin:0 0 14px; font-size:42px; line-height:1.15; letter-spacing:-.5px}
   .hero h1 .grad{background:linear-gradient(120deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .hero p.en{margin:0 0 14px; color:var(--accent2); font-size:14px; font-weight:800; letter-spacing:.6px; text-transform:none}
   .hero p.lead{margin:0 0 20px; color:var(--muted); font-size:17px}
   .cta{display:flex; flex-wrap:wrap; gap:12px}
   .btn{display:inline-flex; align-items:center; gap:8px; min-height:46px; padding:0 18px; border-radius:11px; font-weight:900; font-size:15px; text-decoration:none; border:1px solid transparent; cursor:pointer}
@@ -67,13 +69,17 @@
   .step h3{margin:0 0 5px; font-size:15px}
   .step p{margin:0; color:var(--muted); font-size:13px}
 
+  .name-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .kanji-lg{font-size:30px; font-weight:900; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1}
+  .name-line{margin:18px 0 0; font-size:18px; font-weight:900}
+  .name-line .mut{color:var(--muted); font-weight:700}
   .note{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:10px; background:var(--panel); padding:14px 16px; color:var(--muted); font-size:14px}
   footer{border-top:1px solid var(--line); margin-top:24px; padding:24px 0; color:var(--muted); font-size:13px; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; align-items:center}
 
   @media (max-width:760px){
     .hero{grid-template-columns:1fr; padding:28px 0 14px}
     .hero h1{font-size:32px}
-    .grid,.how{grid-template-columns:1fr}
+    .grid,.how,.name-grid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -81,16 +87,18 @@
 <div class="wrap">
 
   <header>
-    <div class="brand"><span class="dot"></span> hiyu</div>
+    <div class="brand"><span class="dot"></span> hiyu <span class="kanji">日結</span></div>
     <span class="badge"><span class="pulse"></span> 開発中 · Building in public</span>
   </header>
 
   <section class="hero">
     <div>
-      <h1>どこからでも、<span class="grad">AI と開発</span>を。</h1>
+      <h1>人と AI を結び、<span class="grad">日々に結果</span>を。</h1>
+      <p class="en">Connect every day. Ship every day.</p>
       <p class="lead">
-        スマホ・タブレットから、AI コーディングエージェントを動かすターミナル。
-        <strong>tmux のセッションをそのまま持ち歩き</strong>、Tailscale 越しに安全に。
+        <strong>hiyu（日結）</strong>は、毎日 AI に指示を出して結果を出すための開発ツール。
+        スマホ・タブレットから AI コーディングエージェントを動かすターミナルを、
+        <strong>tmux のセッションをそのまま</strong>、Tailscale 越しに安全に。
         席を立っても、移動中でも、作業は止まらない。
       </p>
       <div class="cta">
@@ -166,16 +174,27 @@
     </div>
   </section>
 
+  <section id="name">
+    <h2>名前について</h2>
+    <p class="sub">hiyu = 日結（ひゆ）。</p>
+    <div class="name-grid">
+      <div class="card"><div class="ic kanji-lg">日</div><h3>毎日</h3><p>特別な日ではなく、日々の開発に。Day。</p></div>
+      <div class="card"><div class="ic kanji-lg">結</div><h3>結ぶ・結果</h3><p>人と AI を結び、作業を結果へ。Ship。</p></div>
+      <div class="card"><div class="ic">⌘</div><h3>.sh が効く</h3><p>tmux / shell の含み。短く、覚えやすく、一意。</p></div>
+    </div>
+    <p class="name-line">人と AI を結び、日々に結果を。<span class="mut"> — 結ぶ、結果を。</span></p>
+  </section>
+
   <section>
     <div class="note">
-      <strong>開発中のプロダクトです。</strong> 仕様・名称・対応エージェントは変わることがあります。
+      <strong>開発中のプロダクトです。</strong> 仕様・対応エージェントは変わることがあります。
       公開デモやサインアップは準備中。アップデートはこのページで告知します。
     </div>
   </section>
 
   <footer>
-    <span>© <span id="y">2026</span> hiyu</span>
-    <span>どこからでも、AI と開発を。</span>
+    <span>© <span id="y">2026</span> hiyu / 日結</span>
+    <span>Connect every day. Ship every day.</span>
   </footer>
 
 </div>
