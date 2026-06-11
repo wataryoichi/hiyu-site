@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>hiyu — どこからでも、AIと開発を</title>
+<meta name="description" content="スマホ・タブレットから、AIコーディングエージェントを動かすターミナル。tmux のセッションをそのまま持ち歩き、Tailscale 越しに安全に。チーム共有・運用者名簿・操作監査に対応。">
+<meta property="og:title" content="hiyu — どこからでも、AIと開発を">
+<meta property="og:description" content="スマホから AI コーディングエージェントを動かすターミナル。tmux をそのまま、Tailscale 越しに安全に。">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0f172a">
+<style>
+  :root{
+    --bg:#0b1220; --panel:#111a2e; --panel2:#0f1626; --line:#1e2b46;
+    --text:#e6edf7; --muted:#93a4c0; --accent:#3b82f6; --accent2:#22d3ee; --ok:#34d399; --danger:#fb7185;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; color:var(--text); background:
+      radial-gradient(1100px 520px at 78% -10%, rgba(59,130,246,.18), transparent 60%),
+      radial-gradient(900px 460px at 8% 8%, rgba(34,211,238,.10), transparent 55%),
+      var(--bg);
+    font-family:system-ui,-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px; margin:0 auto; padding:0 20px}
+  a{color:inherit}
+  header{display:flex; align-items:center; justify-content:space-between; padding:18px 0}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:900; font-size:20px; letter-spacing:.5px}
+  .brand .dot{width:11px; height:11px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 16px rgba(59,130,246,.7)}
+  .badge{display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border:1px solid var(--line); border-radius:999px; background:var(--panel); color:var(--muted); font-size:12px; font-weight:800}
+  .badge .pulse{width:8px;height:8px;border-radius:999px;background:var(--ok);box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+
+  .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:34px; align-items:center; padding:46px 0 26px}
+  .hero h1{margin:0 0 14px; font-size:42px; line-height:1.15; letter-spacing:-.5px}
+  .hero h1 .grad{background:linear-gradient(120deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .hero p.lead{margin:0 0 20px; color:var(--muted); font-size:17px}
+  .cta{display:flex; flex-wrap:wrap; gap:12px}
+  .btn{display:inline-flex; align-items:center; gap:8px; min-height:46px; padding:0 18px; border-radius:11px; font-weight:900; font-size:15px; text-decoration:none; border:1px solid transparent; cursor:pointer}
+  .btn.primary{background:linear-gradient(120deg,var(--accent),#2563eb); color:#eaf2ff; box-shadow:0 14px 34px rgba(37,99,235,.35)}
+  .btn.ghost{background:transparent; border-color:var(--line); color:var(--text)}
+  .btn.ghost:hover{background:var(--panel)}
+
+  /* terminal mockup (dummy content only) */
+  .term{border:1px solid var(--line); border-radius:14px; background:var(--panel2); box-shadow:0 30px 70px rgba(2,6,16,.6); overflow:hidden}
+  .term .bar{display:flex; align-items:center; gap:7px; padding:11px 13px; border-bottom:1px solid var(--line); background:var(--panel)}
+  .term .bar i{width:11px;height:11px;border-radius:999px;display:inline-block}
+  .term .bar .r{background:#f87171}.term .bar .y{background:#fbbf24}.term .bar .g{background:#34d399}
+  .term .bar span{margin-left:8px; color:var(--muted); font-size:12px; font-weight:700}
+  .term pre{margin:0; padding:14px 15px; font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:#cdd9ee; white-space:pre-wrap}
+  .term .p{color:var(--accent2)} .term .ok{color:var(--ok)} .term .mut{color:var(--muted)} .term .cur{color:#eaf2ff;background:#3b82f6;border-radius:2px}
+
+  section{padding:34px 0}
+  h2{font-size:26px; margin:0 0 6px; letter-spacing:-.3px}
+  .sub{color:var(--muted); margin:0 0 22px}
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .card{border:1px solid var(--line); border-radius:14px; background:linear-gradient(180deg,var(--panel),var(--panel2)); padding:18px}
+  .card .ic{font-size:22px}
+  .card h3{margin:10px 0 6px; font-size:16px}
+  .card p{margin:0; color:var(--muted); font-size:14px}
+
+  .how{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; counter-reset:step}
+  .step{position:relative; border:1px solid var(--line); border-radius:14px; background:var(--panel2); padding:18px 18px 18px 56px}
+  .step::before{counter-increment:step; content:counter(step); position:absolute; left:16px; top:16px; width:28px; height:28px; display:grid; place-items:center; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#06101f; font-weight:900}
+  .step h3{margin:0 0 5px; font-size:15px}
+  .step p{margin:0; color:var(--muted); font-size:13px}
+
+  .note{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:10px; background:var(--panel); padding:14px 16px; color:var(--muted); font-size:14px}
+  footer{border-top:1px solid var(--line); margin-top:24px; padding:24px 0; color:var(--muted); font-size:13px; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; align-items:center}
+
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr; padding:28px 0 14px}
+    .hero h1{font-size:32px}
+    .grid,.how{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><span class="dot"></span> hiyu</div>
+    <span class="badge"><span class="pulse"></span> 開発中 · Building in public</span>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>どこからでも、<span class="grad">AI と開発</span>を。</h1>
+      <p class="lead">
+        スマホ・タブレットから、AI コーディングエージェントを動かすターミナル。
+        <strong>tmux のセッションをそのまま持ち歩き</strong>、Tailscale 越しに安全に。
+        席を立っても、移動中でも、作業は止まらない。
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#features">特徴を見る</a>
+        <a class="btn ghost" href="#how">仕組み</a>
+      </div>
+    </div>
+
+    <div class="term" aria-hidden="true">
+      <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>hiyu · session: main</span></div>
+<pre><span class="mut"># スマホのブラウザ（PWA）から、いつものセッションへ</span>
+<span class="p">~/project</span> $ <span class="ok">claude</span> "テストの失敗を直して"
+<span class="mut">› 3 files を確認中… 修正案を作成しました</span>
+<span class="ok">✓</span> 変更を適用 / テスト 12 passed
+<span class="p">~/project</span> $ <span class="cur"> </span>
+</pre>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>特徴</h2>
+    <p class="sub">「ノートPCを開く」必要がない開発環境。</p>
+    <div class="grid">
+      <div class="card">
+        <div class="ic">📱</div>
+        <h3>スマホ最適のターミナル</h3>
+        <p>PWA としてホーム画面に置ける。長文入力・クイックキー・音声入力など、片手でも操作しやすい設計。</p>
+      </div>
+      <div class="card">
+        <div class="ic">🔒</div>
+        <h3>Tailscale 越しに安全に</h3>
+        <p>自分のマシンに置いたまま、外部に公開せずアクセス。HTTPS で、信頼できる端末からだけ繋がる。</p>
+      </div>
+      <div class="card">
+        <div class="ic">🧠</div>
+        <h3>主要 AI エージェント対応</h3>
+        <p>Claude Code をはじめとする AI コーディングエージェントを tmux 上で起動・継続。セッションは落ちない。</p>
+      </div>
+      <div class="card">
+        <div class="ic">👥</div>
+        <h3>チームで共有</h3>
+        <p>1 つのワークスペースを少人数の運用者で共有。席数で課金しない、新しいチーム開発のかたち。</p>
+      </div>
+      <div class="card">
+        <div class="ic">🪪</div>
+        <h3>運用者名簿 & ログイン</h3>
+        <p>名前＋パスコードでログイン。役割（管理者／運用者）で操作を制御。クラウド公開時も守られる。</p>
+      </div>
+      <div class="card">
+        <div class="ic">🧾</div>
+        <h3>操作監査</h3>
+        <p>誰が・いつ・何をしたかを記録。チームで使っても、後から追える安心感。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>仕組み</h2>
+    <p class="sub">むずかしい設定なしで、いつもの環境にそのまま繋がる。</p>
+    <div class="how">
+      <div class="step">
+        <h3>自分のマシンで起動</h3>
+        <p>開発マシン上で hiyu を立ち上げる。tmux のセッションがそのまま操作対象に。</p>
+      </div>
+      <div class="step">
+        <h3>Tailscale で繋ぐ</h3>
+        <p>スマホ・タブレットを同じ tailnet に。公開サーバーを増やさず、安全に到達。</p>
+      </div>
+      <div class="step">
+        <h3>どこからでも続き</h3>
+        <p>移動中でも、別の部屋からでも、開いたセッションの続きを。AI への指示も送信も片手で。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="note">
+      <strong>開発中のプロダクトです。</strong> 仕様・名称・対応エージェントは変わることがあります。
+      公開デモやサインアップは準備中。アップデートはこのページで告知します。
+    </div>
+  </section>
+
+  <footer>
+    <span>© <span id="y">2026</span> hiyu</span>
+    <span>どこからでも、AI と開発を。</span>
+  </footer>
+
+</div>
+<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+</body>
+</html>
